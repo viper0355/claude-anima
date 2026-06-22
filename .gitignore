@@ -1,0 +1,4 @@
+.env
+*.log
+**/heartbeat-state.json
+.DS_Store
