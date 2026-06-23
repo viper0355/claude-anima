@@ -19,7 +19,7 @@
 - [x] 4. skills/memory/SKILL.md: OpenClaw-style memory SOP adapted to Claude Code's native memory dir (IDENTITY/USER/SOUL/MEMORY + daily notes + distillation).
 - [x] 5. templates/: IDENTITY.md, USER.md, SOUL.md, HEARTBEAT.md starter templates (blank + instructions).
 - [x] 6. hooks/: SessionStart loads memory (IDENTITY/USER/SOUL/MEMORY → additionalContext) + PreCompact reminds agent to flush durable memory before compaction. Wired via plugin.json `hooks: ./hooks/hooks.json`. MEMORY_DIR resolves from .env or by walking up to HEARTBEAT.md; silent no-op outside memory workspaces. Tested both scripts.
-- [ ] 7. scripts/setup.sh: idempotent installer — prompts for bot token + chat_id + project path, writes .env, installs launchd, copies skills.
+- [x] 7. scripts/setup.sh: idempotent installer — prompts for bot token + chat_id + project/memory dir + waking hours, writes gitignored .env (chmod 600), seeds memory+HEARTBEAT templates (never clobbers), installs+loads per-user launchd agent (cron fallback off-mac), sends a test Telegram. bash -n clean.
 - [ ] 8. README.md: full — what it is, /plugin install, setup, config, safety. Credit OpenClaw/Hermes.
 - [ ] 9. marketplace.json so it can be /plugin install'd.
 - [ ] 10. Final self-review: confirm NO hardcoded secrets/personal values. Then Telegram Hank: "claude-heartbeat build complete, ready for review", and remove the build task from ~/yt-channel/HEARTBEAT.md.
