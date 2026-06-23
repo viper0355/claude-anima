@@ -15,7 +15,7 @@
 - [x] 0. Scaffold dirs + .gitignore + plugin.json stub + README stub  (done by setup session)
 - [x] 1. skills/heartbeat/SKILL.md: copy from yt-channel, GENERALIZE — replace hardcoded chat_id / yt-channel paths / Piko identity / channel-specific checks with generic placeholders that point at the user's HEARTBEAT.md + config.
 - [x] 2. scripts/tg_notify.sh: generalize — read chat_id from .env/config, not hardcoded.
-- [ ] 3. scripts/heartbeat.sh + templates/heartbeat.plist.template: project path via env var; template the user fills in.
+- [x] 3. scripts/heartbeat.sh + templates/heartbeat.plist.template: project path via env var; template the user fills in.
 - [ ] 4. skills/memory/SKILL.md: OpenClaw-style memory SOP adapted to Claude Code's native memory dir (IDENTITY/USER/SOUL/MEMORY + daily notes + distillation).
 - [ ] 5. templates/: IDENTITY.md, USER.md, SOUL.md, HEARTBEAT.md starter templates (blank + instructions).
 - [ ] 6. hooks/: SessionStart (load memory summary) + PreCompact (write summary). Research Claude Code hook format first; if unsure, leave a documented stub + NOTE here for Hank.
