@@ -17,7 +17,7 @@
 - [x] 2. scripts/tg_notify.sh: generalize — read chat_id from .env/config, not hardcoded.
 - [x] 3. scripts/heartbeat.sh + templates/heartbeat.plist.template: project path via env var; template the user fills in.
 - [x] 4. skills/memory/SKILL.md: OpenClaw-style memory SOP adapted to Claude Code's native memory dir (IDENTITY/USER/SOUL/MEMORY + daily notes + distillation).
-- [ ] 5. templates/: IDENTITY.md, USER.md, SOUL.md, HEARTBEAT.md starter templates (blank + instructions).
+- [x] 5. templates/: IDENTITY.md, USER.md, SOUL.md, HEARTBEAT.md starter templates (blank + instructions).
 - [ ] 6. hooks/: SessionStart (load memory summary) + PreCompact (write summary). Research Claude Code hook format first; if unsure, leave a documented stub + NOTE here for Hank.
 - [ ] 7. scripts/setup.sh: idempotent installer — prompts for bot token + chat_id + project path, writes .env, installs launchd, copies skills.
 - [ ] 8. README.md: full — what it is, /plugin install, setup, config, safety. Credit OpenClaw/Hermes.
