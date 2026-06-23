@@ -18,7 +18,7 @@
 - [x] 3. scripts/heartbeat.sh + templates/heartbeat.plist.template: project path via env var; template the user fills in.
 - [x] 4. skills/memory/SKILL.md: OpenClaw-style memory SOP adapted to Claude Code's native memory dir (IDENTITY/USER/SOUL/MEMORY + daily notes + distillation).
 - [x] 5. templates/: IDENTITY.md, USER.md, SOUL.md, HEARTBEAT.md starter templates (blank + instructions).
-- [ ] 6. hooks/: SessionStart (load memory summary) + PreCompact (write summary). Research Claude Code hook format first; if unsure, leave a documented stub + NOTE here for Hank.
+- [x] 6. hooks/: SessionStart loads memory (IDENTITY/USER/SOUL/MEMORY → additionalContext) + PreCompact reminds agent to flush durable memory before compaction. Wired via plugin.json `hooks: ./hooks/hooks.json`. MEMORY_DIR resolves from .env or by walking up to HEARTBEAT.md; silent no-op outside memory workspaces. Tested both scripts.
 - [ ] 7. scripts/setup.sh: idempotent installer — prompts for bot token + chat_id + project path, writes .env, installs launchd, copies skills.
 - [ ] 8. README.md: full — what it is, /plugin install, setup, config, safety. Credit OpenClaw/Hermes.
 - [ ] 9. marketplace.json so it can be /plugin install'd.
