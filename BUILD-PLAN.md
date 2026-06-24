@@ -25,3 +25,7 @@
 - [x] 10. Final self-review: confirmed NO hardcoded secrets — `.env`/bot token/chat_id all gitignored; only `viper0355` (Hank's public GitHub handle, intended as plugin author/homepage) appears in manifests. Notified Hank, removed build task from yt-channel HEARTBEAT.md. BUILD COMPLETE.
 
 ## Notes from heartbeat runs (append below)
+
+## Future (post-launch)
+- **User-configurable heartbeat frequency + minimal per-wake token cost.** Adoption hinges on this — if the heartbeat is expensive, nobody runs it. Each wake should do as little as possible (read state, decide, exit if nothing to do).
+- **Schedule profiles by routine/day.** e.g. weekday: start 08:00, throttle or pause late afternoon to leave quota for the user's evening; weekend a separate profile. Driven by the user's real working hours.
