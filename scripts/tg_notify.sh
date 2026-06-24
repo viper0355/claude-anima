@@ -4,13 +4,18 @@
 # Config: reads TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID from an env file.
 # Override the location with HEARTBEAT_ENV; otherwise these are tried in order:
 #   $HEARTBEAT_ENV
-#   ~/.claude/channels/telegram/.env   (if you use the official telegram plugin)
+#   <plugin>/.env                       (written by setup.sh — the canonical config)
+#   ~/.claude/channels/telegram/.env    (if you use the official telegram plugin)
 #   ~/.config/claude-heartbeat/.env
 # NEVER commit this env file — keep token + chat_id out of the repo.
 set -e
 
+# Resolve at top level: inside a zsh function $0 is the function name, not the script.
+SCRIPT_DIR="${0:A:h}"
+
 _find_env() {
   for f in "$HEARTBEAT_ENV" \
+           "$SCRIPT_DIR/../.env" \
            "$HOME/.claude/channels/telegram/.env" \
            "$HOME/.config/claude-heartbeat/.env"; do
     [ -n "$f" ] && [ -f "$f" ] && { echo "$f"; return 0; }
