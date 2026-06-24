@@ -22,6 +22,6 @@
 - [x] 7. scripts/setup.sh: idempotent installer — prompts for bot token + chat_id + project/memory dir + waking hours, writes gitignored .env (chmod 600), seeds memory+HEARTBEAT templates (never clobbers), installs+loads per-user launchd agent (cron fallback off-mac), sends a test Telegram. bash -n clean.
 - [x] 8. README.md: full — what it is, /plugin install, setup, config, safety. Credit OpenClaw/Hermes.
 - [x] 9. marketplace.json so it can be /plugin install'd.
-- [ ] 10. Final self-review: confirm NO hardcoded secrets/personal values. Then Telegram Hank: "claude-heartbeat build complete, ready for review", and remove the build task from ~/yt-channel/HEARTBEAT.md.
+- [x] 10. Final self-review: confirmed NO hardcoded secrets — `.env`/bot token/chat_id all gitignored; only `viper0355` (Hank's public GitHub handle, intended as plugin author/homepage) appears in manifests. Notified Hank, removed build task from yt-channel HEARTBEAT.md. BUILD COMPLETE.
 
 ## Notes from heartbeat runs (append below)
