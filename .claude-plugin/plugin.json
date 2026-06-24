@@ -2,7 +2,10 @@
   "name": "claude-heartbeat",
   "version": "0.0.1",
   "description": "OpenClaw-style persistent memory + hourly heartbeat for Claude Code. Your AI wakes itself on a schedule, checks in, notifies you (Telegram), and remembers across sessions. Inspired by OpenClaw / Hermes.",
-  "author": "viper0355",
-  "license": "MIT-0",
-  "hooks": "./hooks/hooks.json"
+  "author": {
+    "name": "viper0355",
+    "url": "https://github.com/viper0355"
+  },
+  "homepage": "https://github.com/viper0355/claude-heartbeat",
+  "license": "MIT-0"
 }
