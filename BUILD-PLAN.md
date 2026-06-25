@@ -29,3 +29,13 @@
 ## Future (post-launch)
 - **User-configurable heartbeat frequency + minimal per-wake token cost.** Adoption hinges on this — if the heartbeat is expensive, nobody runs it. Each wake should do as little as possible (read state, decide, exit if nothing to do).
 - **Schedule profiles by routine/day.** e.g. weekday: start 08:00, throttle or pause late afternoon to leave quota for the user's evening; weekend a separate profile. Driven by the user's real working hours.
+
+## Memory sync: pluggable backend (don't force git)
+The tool only needs a **local `MEMORY_DIR`**; how that dir syncs is the user's choice.
+Document these options in README so non-engineers aren't forced into git:
+- **(a) Plain local** — single machine, no sync.
+- **(b) Cloud-drive desktop sync** (Google Drive / iCloud / Dropbox / OneDrive) — zero git, auto cross-device, **non-engineer friendly**; still local-read so token-cheap. ← recommended default for non-engineers.
+- **(c) Obsidian Sync** — for Obsidian vault users.
+- **(d) Git (private repo)** — versioned, power-user default.
+
+**Hard rule:** always **local-read** (cheap). NEVER read memory through a connector/MCP (Notion/Drive MCP) — that's the expensive path. Sync backend is swappable; read path stays local.
