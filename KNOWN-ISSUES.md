@@ -52,5 +52,29 @@ but the real cause is **resource contention between sessions**.
 3. **Make the heartbeat single-instance** — a lock file so two heartbeat
    sessions can never overlap.
 
-(Root cause confirmed 2026-06-24 in the author's own setup. The exact isolation
-recipe will be finalized here once the fix is verified in production.)
+## Verified fix (2026-06-25)
+
+The clean fix keeps the `--channels` bot working while stopping every *other*
+session from touching the token. **Both halves are required.**
+
+1. **Disable the channel plugin globally.** In `~/.claude/settings.json`, under
+   `enabledPlugins`, set the bidirectional channel plugin to `false`. Now
+   heartbeat, sub-agents and interactive sessions never load it, never poll.
+2. **Re-enable it for the channels session only, via `--settings`.** Put the
+   flag in a tiny file and pass it on the channels launch:
+   ```json
+   // ~/.claude/channels-telegram.json
+   { "enabledPlugins": { "telegram@claude-plugins-official": true } }
+   ```
+   ```bash
+   claude --channels plugin:telegram@claude-plugins-official \
+     --settings ~/.claude/channels-telegram.json
+   ```
+   Only that one session loads the plugin and polls the token.
+
+**Verified** in the author's setup: the channels bot connects and sends/receives
+normally; a simulated heartbeat session (no `--settings`) does **not** start the
+plugin's MCP server, does not grab the token, and the bot is never interrupted.
+
+⚠️ Disabling globally **without** the `--settings` re-add turns `--channels` into
+a dead shell — the plugin's MCP server won't load at all. You need both steps.
