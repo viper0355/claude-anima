@@ -78,3 +78,18 @@ plugin's MCP server, does not grab the token, and the bot is never interrupted.
 
 ⚠️ Disabling globally **without** the `--settings` re-add turns `--channels` into
 a dead shell — the plugin's MCP server won't load at all. You need both steps.
+
+# Cross-device memory sync — conflict handling
+
+Memory (`MEMORY_DIR`) is a git repo synced across devices:
+- **Pull on session start** (`session_start.sh`, 5s-capped, offline-safe).
+- **Push when memory changes** — interactive sessions via the `Stop` hook
+  (`stop_sync.sh`, only when dirty), automated beats via `heartbeat.sh`.
+- `memory_sync.sh` does `pull --rebase --autostash` → commit → push, single-flight
+  (lock at `.git/anima-sync.lock`), and fail-safe (offline never breaks a session).
+
+**Limitation — same-line concurrent edits.** Memory is mostly append/distinct
+files, so rebase auto-merges cleanly in practice. If two devices edit the *same
+line* before syncing, `pull --rebase` fails and `memory_sync` logs
+`pull skipped (offline or conflict)`; the local change stays uncommitted until a
+human resolves it. No data is lost, but that file won't sync until resolved.

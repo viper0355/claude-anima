@@ -13,6 +13,11 @@ MEM="${MEMORY_DIR:-${1:-}}"
 [ -n "$MEM" ] && [ -d "$MEM/.git" ] || { echo "memory_sync: no git repo at MEMORY_DIR='$MEM'"; exit 0; }
 cd "$MEM" || exit 0
 
+# Single-flight: skip if another sync is already running (avoid git half-states).
+LOCK="$MEM/.git/anima-sync.lock"
+if ! mkdir "$LOCK" 2>/dev/null; then echo "memory_sync: another sync in progress, skipping"; exit 0; fi
+trap 'rmdir "$LOCK" 2>/dev/null' EXIT INT TERM
+
 # 1) Pull latest first (rebase local on top; autostash uncommitted). Fail-safe.
 git pull --rebase --autostash --quiet 2>/dev/null || echo "memory_sync: pull skipped (offline or conflict)"
 
