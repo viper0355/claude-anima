@@ -14,9 +14,12 @@ set -euo pipefail
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 # 1. Load .env next to the plugin if present (non-fatal).
+#    A caller-provided MEMORY_DIR wins over the .env value.
+_caller_mem="${MEMORY_DIR:-}"
 if [ -f "$ROOT/.env" ]; then
   set -a; . "$ROOT/.env"; set +a
 fi
+[ -n "$_caller_mem" ] && MEMORY_DIR="$_caller_mem"
 
 # 2. Resolve memory dir.
 mem_dir="${MEMORY_DIR:-}"
@@ -30,6 +33,19 @@ fi
 
 # No workspace → emit nothing, exit clean (don't disturb non-memory projects).
 [ -n "$mem_dir" ] && [ -d "$mem_dir" ] || exit 0
+
+# 2b. Cross-device sync: pull latest memory before reading. Capped at 5s so a
+#     slow/absent network never delays session start (offline → use local copy).
+if [ -d "$mem_dir/.git" ]; then
+  ( cd "$mem_dir" && git pull --rebase --autostash --quiet >/dev/null 2>&1 ) &
+  _pull_pid=$!
+  ( sleep 5; kill "$_pull_pid" 2>/dev/null ) >/dev/null 2>&1 &
+  _wd_pid=$!
+  disown "$_wd_pid" 2>/dev/null || true
+  wait "$_pull_pid" 2>/dev/null || true
+  kill "$_wd_pid" 2>/dev/null || true
+  wait "$_wd_pid" 2>/dev/null || true
+fi
 
 # 3. Concatenate the always-load memory files that exist.
 buf=""

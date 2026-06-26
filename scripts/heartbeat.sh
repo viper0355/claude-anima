@@ -17,3 +17,7 @@ PROMPT="${CLAUDE_HEARTBEAT_PROMPT:-Run a heartbeat now using the heartbeat skill
 cd "$PROJECT_DIR" || exit 1
 echo "=== heartbeat $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
 claude -p "$PROMPT" --dangerously-skip-permissions >> "$LOG" 2>&1
+
+# Cross-device sync: push any memory the heartbeat wrote/distilled (and pull
+# remote changes). Fail-safe; no-ops when nothing changed.
+"$SCRIPT_DIR/memory_sync.sh" >> "$LOG" 2>&1 || true
