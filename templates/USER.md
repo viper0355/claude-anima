@@ -7,7 +7,7 @@ Delete these comments once filled.
 
 # User
 
-- **Name / how to address**: <!-- e.g. "Hank; calls himself WooHoo" -->
+- **Name / how to address**: <!-- e.g. "Alex; prefers Al" -->
 - **Timezone**: <!-- e.g. "Asia/Taipei (GMT+8)" — used for quiet hours & scheduling -->
 - **Language / tone wanted**: <!-- e.g. "繁體中文, terse, no fluff" -->
 - **Role / context**: <!-- who they are to the project, e.g. "partner/boss; not an engineer — explain in plain language" -->

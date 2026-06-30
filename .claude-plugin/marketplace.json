@@ -1,20 +1,20 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "claude-heartbeat",
+  "name": "claude-anima",
   "description": "OpenClaw-style persistent memory + hourly heartbeat for Claude Code.",
   "owner": {
     "name": "viper0355"
   },
   "plugins": [
     {
-      "name": "claude-heartbeat",
+      "name": "claude-anima",
       "description": "OpenClaw-style persistent memory + hourly heartbeat for Claude Code. Your AI wakes itself on a schedule, checks in, notifies you (Telegram), and remembers across sessions. Inspired by OpenClaw / Hermes.",
       "author": {
         "name": "viper0355"
       },
       "category": "productivity",
       "source": "./",
-      "homepage": "https://github.com/viper0355/claude-heartbeat",
+      "homepage": "https://github.com/viper0355/claude-anima",
       "license": "MIT-0"
     }
   ]

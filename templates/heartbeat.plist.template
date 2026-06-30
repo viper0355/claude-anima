@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  launchd template for claude-heartbeat (macOS).
+  launchd template for claude-anima (macOS).
   Replace the placeholders, then install:
     cp this file to ~/Library/LaunchAgents/<LABEL>.plist
     launchctl load ~/Library/LaunchAgents/<LABEL>.plist
   Placeholders:
-    __LABEL__            unique reverse-DNS label, e.g. com.you.claude-heartbeat
+    __LABEL__            unique reverse-DNS label, e.g. com.you.claude-anima
     __HEARTBEAT_SH__     absolute path to scripts/heartbeat.sh
   Edit StartCalendarInterval below for your own waking hours (default: hourly 09:00-22:00).
 -->

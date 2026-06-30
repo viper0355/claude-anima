@@ -1,4 +1,4 @@
-# claude-heartbeat
+# claude-anima
 
 **Persistent memory + a self-scheduling heartbeat for Claude Code.**
 
@@ -24,7 +24,7 @@ Inspired by [OpenClaw](https://github.com/OpenClaw) / Hermes. Licensed MIT-0.
 ## Install
 
 ```
-/plugin install claude-heartbeat
+/plugin install claude-anima
 ```
 
 Then run the one-time setup from the plugin root:
@@ -75,6 +75,22 @@ no-op, so installing the plugin never interferes with unrelated projects.
   decide."
 - Review `HEARTBEAT.md` before enabling: anything you list there is something the
   agent may act on unattended.
+
+---
+
+## Known issues
+
+Claude wakes **each heartbeat as its own headless session** — it is not a single
+long-running loop. If you also run a bidirectional Telegram bot (e.g. a
+`--channels` session) in the same setup, a heartbeat waking up can spawn a session
+that re-loads Telegram and fights the bot for the **single bot-token consumer**
+(`getUpdates`), dropping the bot. Guidance:
+
+1. Don't enable a bidirectional channel plugin project-wide; give it its own session.
+2. Use the one-way `tg_notify.sh` for heartbeat notifications (it posts, never polls).
+3. The heartbeat is single-instance by default (atomic lock) so two beats can't overlap.
+
+See [`KNOWN-ISSUES.md`](./KNOWN-ISSUES.md) for the full write-up and verified fix.
 
 ---
 

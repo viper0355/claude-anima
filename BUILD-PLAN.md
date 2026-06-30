@@ -1,4 +1,4 @@
-# BUILD-PLAN — claude-heartbeat plugin
+# BUILD-PLAN — claude-anima plugin
 
 > AUTONOMOUS build. Each heartbeat: pick the next unchecked step, do ONE step, `git add -A && git commit`, check it off. Keep it cheap. NEVER commit secrets — use placeholders.
 > Goal: a GENERIC, open-source Claude Code PLUGIN giving any project (1) OpenClaw-style memory, (2) hourly heartbeat + Telegram notify. Strip ALL yt-channel / Piko / Hank-specific values into config + templates.

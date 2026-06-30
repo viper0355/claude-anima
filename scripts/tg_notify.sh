@@ -6,7 +6,7 @@
 #   $HEARTBEAT_ENV
 #   <plugin>/.env                       (written by setup.sh — the canonical config)
 #   ~/.claude/channels/telegram/.env    (if you use the official telegram plugin)
-#   ~/.config/claude-heartbeat/.env
+#   ~/.config/claude-anima/.env
 # NEVER commit this env file — keep token + chat_id out of the repo.
 set -e
 
@@ -17,14 +17,14 @@ _find_env() {
   for f in "$HEARTBEAT_ENV" \
            "$SCRIPT_DIR/../.env" \
            "$HOME/.claude/channels/telegram/.env" \
-           "$HOME/.config/claude-heartbeat/.env"; do
+           "$HOME/.config/claude-anima/.env"; do
     [ -n "$f" ] && [ -f "$f" ] && { echo "$f"; return 0; }
   done
   return 1
 }
 
 ENV_FILE="$(_find_env)" || {
-  echo "tg_notify: no env file found (set HEARTBEAT_ENV or create ~/.config/claude-heartbeat/.env)" >&2
+  echo "tg_notify: no env file found (set HEARTBEAT_ENV or create ~/.config/claude-anima/.env)" >&2
   exit 1
 }
 source "$ENV_FILE"

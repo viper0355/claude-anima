@@ -38,7 +38,7 @@ bot looks alive (the process is still up) but goes deaf during each reconnect
 window, so messages sent then get no reply. It looks like "the bot is flaky"
 but the real cause is **resource contention between sessions**.
 
-> Note: claude-heartbeat's own Telegram notify (`tg_notify.sh`) is **one-way**
+> Note: claude-anima's own Telegram notify (`tg_notify.sh`) is **one-way**
 > (`curl` → `sendMessage`). It does **not** poll `getUpdates`, so it never
 > competes. The conflict only arises if you separately run a **bidirectional
 > `--channels` bot**.
