@@ -82,8 +82,40 @@ done
 [ -f "$MEMORY_DIR/MEMORY.md" ] || { printf '# MEMORY\n\n> Distilled durable memory. One line per fact.\n' > "$MEMORY_DIR/MEMORY.md"; note "created MEMORY.md"; }
 echo
 
+# --- 5. Git-backed memory (optional, for cross-device sync) ---------------------
+say "5) Cross-device memory sync (git-backed, optional)"
+if [ -d "$MEMORY_DIR/.git" ]; then
+  note "Memory dir is already a git repo — the stop hook + heartbeat will keep it synced."
+else
+  note "Track your memory in a PRIVATE git repo so it follows you across machines."
+  ask MEM_GIT "Set up git-backed memory now? (y/N)" "${MEM_GIT:-N}"
+  case "$MEM_GIT" in
+    y|Y)
+      git -C "$MEMORY_DIR" init -q
+      [ -f "$MEMORY_DIR/.gitignore" ] || printf '.env\n*.log\nheartbeat-state.json\n.DS_Store\n' > "$MEMORY_DIR/.gitignore"
+      git -C "$MEMORY_DIR" add -A
+      git -C "$MEMORY_DIR" -c commit.gpgsign=false commit -q -m "memory: initial" 2>/dev/null || true
+      note "Initialized git repo in $MEMORY_DIR (.env excluded)."
+      note "Keep the remote PRIVATE — memory can contain personal context."
+      ask MEM_REMOTE "Private remote URL (blank to skip)" "${MEM_REMOTE:-}"
+      if [ -n "$MEM_REMOTE" ]; then
+        git -C "$MEMORY_DIR" remote add origin "$MEM_REMOTE" 2>/dev/null \
+          || git -C "$MEMORY_DIR" remote set-url origin "$MEM_REMOTE"
+        if git -C "$MEMORY_DIR" push -u origin HEAD 2>/dev/null; then
+          note "Pushed initial memory to $MEM_REMOTE."
+        else
+          note "Couldn't push yet — create the (private, empty) remote, then:"
+          note "  git -C $MEMORY_DIR push -u origin HEAD"
+        fi
+      fi
+      ;;
+    *) note "Skipped — memory stays local-only (you can re-run setup to enable later)." ;;
+  esac
+fi
+echo
+
 # --- Install launchd agent (macOS) ---------------------------------------------
-say "5) Scheduler"
+say "6) Scheduler"
 if [ "$(uname)" != "Darwin" ]; then
   note "Not macOS — skipping launchd. Wire $ROOT/scripts/heartbeat.sh into cron:"
   note "  0 ${WAKE_START}-${WAKE_END} * * *  $ROOT/scripts/heartbeat.sh"
@@ -127,7 +159,7 @@ fi
 echo
 
 # --- Verify --------------------------------------------------------------------
-say "6) Verify"
+say "7) Verify"
 if [ -n "${TELEGRAM_BOT_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
   if "$ROOT/scripts/tg_notify.sh" "claude-anima: setup complete ✅" 2>/dev/null; then
     note "Sent you a test Telegram message — check your phone."

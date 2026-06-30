@@ -16,8 +16,8 @@ Inspired by [OpenClaw](https://github.com/OpenClaw) / Hermes. Licensed MIT-0.
 
 | Piece | What it does |
 |---|---|
-| **Heartbeat** | A per-user launchd agent (macOS) wakes a headless Claude on a schedule (hourly, daytime by default). It reads your `HEARTBEAT.md` checklist, works through the stale items, and notifies you on Telegram only when warranted. |
-| **Memory** | OpenClaw-style `IDENTITY` / `USER` / `SOUL` / `MEMORY` structure plus daily notes and periodic distillation, so your agent keeps context across sessions. |
+| **Heartbeat** | A per-user launchd agent (macOS) wakes a headless Claude on a schedule (hourly, daytime by default). A free shell **pre-gate** only wakes the model when something actually changed (git diff, unpushed commits, or a periodic floor) — most beats exit in milliseconds for **zero tokens**. When it does wake, it reads your `HEARTBEAT.md` checklist and notifies you on Telegram only when warranted. |
+| **Memory** | OpenClaw-style `IDENTITY` / `USER` / `SOUL` / `MEMORY` structure plus daily notes and periodic distillation. Optionally **git-backed** — `setup.sh` can init a private repo so memory follows you across machines (the stop hook + heartbeat auto-sync it). |
 | **Hooks** | `SessionStart` loads your memory into context automatically; `PreCompact` reminds the agent to flush durable memory before the conversation is compacted. |
 | **Telegram notify** | `tg_notify.sh` sends a one-line message via the Telegram Bot API, reading the bot token + chat id from a gitignored `.env`. |
 

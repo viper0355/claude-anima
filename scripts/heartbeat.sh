@@ -31,8 +31,43 @@ if ! mkdir "$LOCKDIR" 2>/dev/null; then
 fi
 trap 'rmdir "$LOCKDIR" 2>/dev/null' EXIT
 
-echo "=== heartbeat $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
-claude -p "$PROMPT" --dangerously-skip-permissions >> "$LOG" 2>&1
+# --- Cost gate: only wake the model when there's a real signal (free, zero tokens). ---
+# Each heartbeat is a fresh headless session = real API cost. In a git project we can
+# cheaply tell whether anything actually happened: working-tree changed since last
+# beat, unpushed commits, or the periodic floor (CLAUDE_ANIMA_FLOOR_HOURS, default 5h).
+# No signal → log a silent beat and exit WITHOUT waking the model. The reason is passed
+# into the prompt so the wake is targeted. Non-git projects can't be gated → always run.
+FLOOR_HOURS="${CLAUDE_ANIMA_FLOOR_HOURS:-5}"
+GATE="${TMPDIR:-/tmp}/anima-gate-$(printf '%s' "$PROJECT_DIR" | shasum | cut -c1-8)"
+REASONS=""
+if git rev-parse --git-dir >/dev/null 2>&1; then
+  GH=$(git status --porcelain 2>/dev/null | shasum | cut -d' ' -f1)
+  UNP=$(git log @{u}..HEAD --oneline 2>/dev/null | wc -l | tr -d ' ')
+  PH=""; LF=0
+  [ -f "$GATE" ] && { PH=$(sed -n 1p "$GATE"); LF=$(sed -n 2p "$GATE"); }
+  case "$LF" in ''|*[!0-9]*) LF=0;; esac
+  HRS=$(( (NOW - LF) / 3600 ))
+  [ "$GH" != "$PH" ] && REASONS="git changed"
+  [ "${UNP:-0}" -gt 0 ] && REASONS="${REASONS:+$REASONS, }${UNP} unpushed commit(s)"
+  [ "$HRS" -ge "$FLOOR_HOURS" ] && REASONS="${REASONS:+$REASONS, }periodic check (${HRS}h)"
+  if [ -z "$REASONS" ]; then
+    echo "=== heartbeat silent — no signal $(date) ===" >> "$LOG"
+    printf '%s\n%s\n' "$GH" "$LF" > "$GATE"
+    exit 0
+  fi
+else
+  REASONS="no git repo (cannot gate cheaply)"
+fi
+
+echo "=== heartbeat $(date '+%Y-%m-%d %H:%M:%S') — signals: $REASONS ===" >> "$LOG"
+claude -p "Heartbeat triggered. A free pre-gate detected these signals: ${REASONS}. ${PROMPT} Focus on what the signals point to rather than scanning everything." \
+  --dangerously-skip-permissions >> "$LOG" 2>&1
+
+# Recompute git hash AFTER the run so the model's own commit doesn't re-trigger next
+# beat; this wake counts as a full pass → reset the floor.
+if git rev-parse --git-dir >/dev/null 2>&1; then
+  printf '%s\n%s\n' "$(git status --porcelain 2>/dev/null | shasum | cut -d' ' -f1)" "$NOW" > "$GATE"
+fi
 
 # Cross-device sync: push any memory the heartbeat wrote/distilled (and pull
 # remote changes). Fail-safe; no-ops when nothing changed.

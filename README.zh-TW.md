@@ -14,8 +14,8 @@
 
 | 元件 | 功能 |
 |---|---|
-| **心跳 Heartbeat** | 一個每位使用者各自的 launchd agent（macOS），按排程（預設白天每小時）喚醒一個無頭 Claude。它讀你的 `HEARTBEAT.md` 清單、處理該做的項目，只有值得時才用 Telegram 通知你。 |
-| **記憶 Memory** | OpenClaw 風格的 `IDENTITY` / `USER` / `SOUL` / `MEMORY` 結構，加上每日筆記與定期蒸餾，讓你的 agent 跨對話保有脈絡。 |
+| **心跳 Heartbeat** | 一個每位使用者各自的 launchd agent（macOS），按排程（預設白天每小時）喚醒無頭 Claude。前面有一道免費的 shell **前置閘門**——只有真的有變動（git 差異、未 push 的 commit、或週期保底）才喚醒模型，多數心跳在毫秒內結束、**零 token**。真要喚醒時才讀 `HEARTBEAT.md` 清單、只在值得時用 Telegram 通知你。 |
+| **記憶 Memory** | OpenClaw 風格的 `IDENTITY` / `USER` / `SOUL` / `MEMORY` 結構，加上每日筆記與定期蒸餾。可選 **git 備援**——`setup.sh` 能幫你 init 一個私有 repo，讓記憶跟著你跨裝置（stop hook + 心跳自動同步）。 |
 | **Hooks** | `SessionStart` 自動把記憶載入脈絡；`PreCompact` 在對話被壓縮前提醒 agent 先寫入持久記憶。 |
 | **Telegram 通知** | `tg_notify.sh` 用 Telegram Bot API 發一行訊息，token 與 chat id 從一個 gitignore 的 `.env` 讀取。 |
 
