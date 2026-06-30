@@ -1,5 +1,7 @@
 # claude-anima
 
+> Language: **English** ・ [繁體中文](./README.zh-TW.md)
+
 **Persistent memory + a self-scheduling heartbeat for Claude Code.**
 
 Your AI wakes itself on a schedule, rotates through a checklist you define, does
