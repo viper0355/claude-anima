@@ -14,12 +14,26 @@ MEM="${MEMORY_DIR:-${1:-}}"
 cd "$MEM" || exit 0
 
 # Single-flight: skip if another sync is already running (avoid git half-states).
+# Steal the lock if it's stale (>10 min = a crashed sync), otherwise a crash would
+# leave the lock behind forever and silently stop all future syncs.
 LOCK="$MEM/.git/anima-sync.lock"
-if ! mkdir "$LOCK" 2>/dev/null; then echo "memory_sync: another sync in progress, skipping"; exit 0; fi
+if ! mkdir "$LOCK" 2>/dev/null; then
+  if [ -d "$LOCK" ] && [ $(( $(date +%s) - $(stat -f %m "$LOCK" 2>/dev/null || date +%s) )) -gt 600 ]; then
+    rmdir "$LOCK" 2>/dev/null
+    mkdir "$LOCK" 2>/dev/null || { echo "memory_sync: lock contended, skipping"; exit 0; }
+    echo "memory_sync: stole stale lock"
+  else
+    echo "memory_sync: another sync in progress, skipping"; exit 0
+  fi
+fi
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT INT TERM
 
 # 1) Pull latest first (rebase local on top; autostash uncommitted). Fail-safe.
-git pull --rebase --autostash --quiet 2>/dev/null || echo "memory_sync: pull skipped (offline or conflict)"
+# On conflict, abort the half-done rebase so we never commit into a broken state.
+git pull --rebase --autostash --quiet 2>/dev/null || {
+  git rebase --abort 2>/dev/null
+  echo "memory_sync: pull skipped (offline or conflict)"
+}
 
 # 2) Commit local changes if any.
 if [ -n "$(git status --porcelain)" ]; then

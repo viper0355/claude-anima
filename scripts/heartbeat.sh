@@ -19,11 +19,14 @@ cd "$PROJECT_DIR" || exit 1
 # Single-instance guard. Claude wakes each heartbeat as its own headless session,
 # so an overrun (or a second trigger) could run two at once and contend for shared
 # resources (e.g. a single Telegram bot token). macOS has no flock, so use an
-# atomic mkdir lock keyed to the project; steal it if it's stale (>20 min crash).
+# atomic mkdir lock keyed to the project; steal it if it's stale. The stale
+# threshold must exceed the longest plausible model run (a heartbeat session can
+# run well past 20 min), otherwise the next hourly beat steals a LIVE lock and
+# two sessions run in parallel — the exact thing the lock exists to prevent.
 LOCKDIR="/tmp/claude-anima-hb-$(printf '%s' "$PROJECT_DIR" | shasum | cut -c1-8).lock"
 NOW=$(date +%s)
 if ! mkdir "$LOCKDIR" 2>/dev/null; then
-  if [ -d "$LOCKDIR" ] && [ $(( NOW - $(stat -f %m "$LOCKDIR" 2>/dev/null || echo "$NOW") )) -gt 1200 ]; then
+  if [ -d "$LOCKDIR" ] && [ $(( NOW - $(stat -f %m "$LOCKDIR" 2>/dev/null || echo "$NOW") )) -gt 3000 ]; then
     rmdir "$LOCKDIR" 2>/dev/null; mkdir "$LOCKDIR" 2>/dev/null || { echo "=== heartbeat skipped (lock) $(date) ===" >> "$LOG"; exit 0; }
   else
     echo "=== heartbeat skipped (another instance running) $(date) ===" >> "$LOG"; exit 0
