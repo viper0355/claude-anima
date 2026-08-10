@@ -45,6 +45,24 @@ Like a human reviewing their journal and updating their mental model:
 3. Distill them into `MEMORY.md` (curated wisdom, not raw logs).
 4. Prune `MEMORY.md` entries that are now outdated or wrong.
 
+### What earns a place in MEMORY.md
+`MEMORY.md` loads every session, so every line is a permanent tax. Two gates:
+
+- **Durable facts** — identity, standing decisions, hard-won constraints, things
+  that will still be true next month. These go in on sight.
+- **Patterns** — a claimed preference or working habit goes in only once it has
+  **shown up more than once**. First occurrence lives in the daily note; when a
+  later beat sees the same thing again, promote it and say what it's based on.
+
+One-off events, in-flight status, and anything with an expiry date stay in the
+daily notes. If an entry starts with "tomorrow" or names a date that will pass,
+it does not belong here.
+
+Pruning is the other half of the job and the half that gets skipped: an entry
+whose date has passed, whose project shipped, or whose decision was reversed is
+now noise that costs tokens every session. Delete it. A `MEMORY.md` that only
+grows is a `MEMORY.md` nobody can afford to load.
+
 Daily files are raw notes; `MEMORY.md` is curated memory. This maintenance is one of the productive things a heartbeat can do without asking — see the `heartbeat` skill.
 
 ## Red lines
